@@ -20,6 +20,9 @@
         import micropip
         await micropip.install('opencv-python-headless')
 
+        import os
+        os.chdir('/home/pyodide')  # Ensure the current directory is set
+
         # Paths of your Python scripts
         scripts = ["./poseDetectionDummy/Basics.py", "./poseDetectionDummy/PoseModule.py", "./poseDetectionDummy/TestProject.py"]
 
