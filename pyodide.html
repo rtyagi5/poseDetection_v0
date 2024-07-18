@@ -7,7 +7,6 @@
   <script src="https://docs.opencv.org/4.x/opencv.js"></script>
 </head>
 <body>
-  <input type="file" accept="image/*" onchange="loadImage(event)">
   <script>
     async function loadPyodideAndRun() {
       let pyodide = await loadPyodide({
@@ -15,7 +14,7 @@
       });
 
       await pyodide.loadPackage("micropip");
-      const micropip = pyodide.pyimport("micropip");
+      const micropip = pyodide.globals.get("micropip");
 
       await micropip.install(["mediapipe"]);
 
