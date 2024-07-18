@@ -12,6 +12,9 @@
         indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/"
       });
 
+      // Ensure that micropip is available
+      await pyodide.loadPackage('micropip');
+
       // Load and initialize your Python scripts using relative paths
       await pyodide.runPythonAsync(`
         import micropip
