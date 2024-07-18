@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Pyodide in WebView</title>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.18.1/full/pyodide.js"></script>
+  <script src="https://docs.opencv.org/4.x/opencv.js"></script>
 </head>
 <body>
   <script>
@@ -12,17 +13,8 @@
         indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/"
       });
 
-      // Ensure that micropip is available
-      await pyodide.loadPackage('micropip');
-
       // Load and initialize your Python scripts using relative paths
       await pyodide.runPythonAsync(`
-        import micropip
-        await micropip.install('opencv-python-headless')
-
-        import os
-        os.chdir('/home/pyodide')  # Ensure the current directory is set
-
         # Paths of your Python scripts
         scripts = ["./poseDetectionDummy/Basics.py", "./poseDetectionDummy/PoseModule.py", "./poseDetectionDummy/TestProject.py"]
 
@@ -36,20 +28,30 @@
         detector = poseDetector()
       `);
 
+      // Ensure that OpenCV.js is loaded
+      let cv = await new Promise((resolve) => {
+        cv['onRuntimeInitialized'] = () => {
+          resolve(cv);
+        };
+      });
+
       // Function to process frame and return feedback and reps
       window.processFrame = async function(base64Image) {
         let result = await pyodide.runPythonAsync(`
-          import cv2
           import numpy as np
           import base64
 
           # Decode base64 image
           img_data = base64.b64decode('${base64Image}')
           np_img = np.frombuffer(img_data, np.uint8)
-          img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
+          img = np_img.reshape((720, 1280, 4))  # Example resolution, adjust as needed
+
+          import js
+          js.cv = await js.globalThis.cv
+          img_mat = js.cv.matFromArray(img, js.cv.CV_8UC4)
 
           # Process the frame using your existing logic
-          img = detector.findPose(img)
+          img = detector.findPose(img_mat)
           lmList = detector.findPosition(img, draw=False)
           feedback = ""
           reps = 0
