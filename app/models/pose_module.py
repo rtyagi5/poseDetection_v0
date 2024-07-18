@@ -4,7 +4,8 @@ import time
 import math
 
 class poseDetector():
-    def __init__(self, mode=False, model_complexity=1, smooth=True, detectionCon=0.5, trackCon=0.5):
+    def __init__(self, mode=False, model_complexity=0, smooth=True,
+                 detectionCon=0.5, trackCon=0.5):
         self.mode = mode
         self.model_complexity = model_complexity
         self.smooth = smooth
@@ -28,8 +29,8 @@ class poseDetector():
                     img,
                     self.results.pose_landmarks,
                     self.mpPose.POSE_CONNECTIONS,
-                    self.mpDraw.DrawingSpec(color=(0, 0, 255), thickness=4, circle_radius=6),  # Change color, thickness, and circle radius
-                    self.mpDraw.DrawingSpec(color=(0, 255, 0), thickness=4, circle_radius=6)   # Change color, thickness, and circle radius
+                    self.mpDraw.DrawingSpec(color=(0, 0, 255), thickness=4, circle_radius=6),
+                    self.mpDraw.DrawingSpec(color=(0, 255, 0), thickness=4, circle_radius=6)
                 )
         return img
 
@@ -41,7 +42,7 @@ class poseDetector():
                 cx, cy = int(lm.x * w), int(lm.y * h)
                 self.lmList.append([id, cx, cy])
                 if draw:
-                    cv2.circle(img, (cx, cy), 10, (255, 0, 0), cv2.FILLED)  # Increased size and thickness
+                    cv2.circle(img, (cx, cy), 10, (255, 0, 0), cv2.FILLED)
         return self.lmList
 
     def findAngle(self, img, p1, p2, p3, draw=True):
@@ -55,8 +56,8 @@ class poseDetector():
             angle += 360
 
         if draw:
-            cv2.line(img, (x1, y1), (x2, y2), (255, 255, 255), 6)  # Increased thickness
-            cv2.line(img, (x3, y3), (x2, y2), (255, 255, 255), 6)  # Increased thickness
+            cv2.line(img, (x1, y1), (x2, y2), (255, 255, 255), 6)
+            cv2.line(img, (x3, y3), (x2, y2), (255, 255, 255), 6)
             cv2.circle(img, (x1, y1), 10, (0, 0, 255), cv2.FILLED)
             cv2.circle(img, (x1, y1), 15, (0, 0, 255), 2)
             cv2.circle(img, (x2, y2), 10, (0, 0, 255), cv2.FILLED)
