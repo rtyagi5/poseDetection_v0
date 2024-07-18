@@ -8,7 +8,9 @@
 <body>
   <script>
     async function loadPyodideAndRun() {
-      let pyodide = await loadPyodide();
+      let pyodide = await loadPyodide({
+        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/"
+      });
 
       // Load and initialize your Python scripts using relative paths
       await pyodide.runPythonAsync(`
